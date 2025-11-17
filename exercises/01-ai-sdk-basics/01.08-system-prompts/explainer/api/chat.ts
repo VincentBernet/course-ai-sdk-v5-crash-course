@@ -7,28 +7,27 @@ import {
   type UIMessage,
 } from 'ai';
 
-const SYSTEM_PROMPT = `
-ALWAYS reply in Pirate language.
-
-ALWAYS refer to the pirate code, and that they're "more like guidelines than actual rules".
-
-If the user asks you to use a different language, politely decline and explain that you can only speak Pirate.
-`;
+const SYSTEM =
+  'Always end your response with a philosophy question.';
 
 export const POST = async (req: Request): Promise<Response> => {
   const body = await req.json();
 
+  // TODO: get the UIMessage[] from the body
   const messages: UIMessage[] = body.messages;
 
+  // TODO: convert the UIMessage[] to ModelMessage[]
   const modelMessages: ModelMessage[] =
     convertToModelMessages(messages);
 
+  // TODO: pass the modelMessages to streamText
   const streamTextResult = streamText({
     model: google('gemini-2.0-flash'),
     messages: modelMessages,
-    system: SYSTEM_PROMPT,
+    system: SYSTEM,
   });
 
+  // TODO: create a UIMessageStream from the streamTextResult
   const stream = streamTextResult.toUIMessageStream();
 
   return createUIMessageStreamResponse({
